@@ -25,7 +25,7 @@ function App() {
           <Route path="/" element={<DefaultPage />} />
 
           <Route
-            path="/full-page"
+            path="/full-page/*"
             element={
               <Suspense>
                 <FullPageExtension />

@@ -1,13 +1,10 @@
-
 .full-page-header {
-  height: 10vh;
   margin: 10px;
 }
 .full-page-body {
-
-  //min-height: 600px;
   width: 90vw;
   margin: auto;
+  //height: 10px
 }
 
 .Select {
@@ -19,4 +16,57 @@ h2 {
   font-family: Inter, sans-serif;
   color: #475161;
   font-weight: 800;
+}
+
+.pub-status-list {
+  display: flex;
+  flex-direction: column;
+  //align-items: center;
+  justify-content: flex-start;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+.locale-list-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 10px;
+  //background-color: #475161;
+}
+.container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: flex-start;
+}
+
+.publishing_details {
+  display: flex;
+  //flex-wrap: wrap;
+  gap: 16px;
+}
+
+.detail_card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  width: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  //background-color: #f9f9f9;
+  text-align: left;
+}
+
+.detail_card p {
+  margin: 8px 0;
+  text-align: left;
+}
+
+.detail_card strong {
+  color: #333;
 }
