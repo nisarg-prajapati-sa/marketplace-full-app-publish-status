@@ -10,6 +10,7 @@ const PublishDetail = ({
 }: any) => {
   const [locale, setLocale] = useState("");
   const [publishStatus, setPublishStatus] = useState<any[]>([]);
+  const [entryTitle, setEntryTitle] = useState(null);
   function getPublishingDetails(
     selectedLocale: any,
     publishingDetails: any,
@@ -64,9 +65,12 @@ const PublishDetail = ({
   return (
     <div className="container">
       <div>
-        <div>  {locale && <span>Published Locale: {locale}</span>}</div>
-       
-       <br />
+        <div>
+          {entryTitle && <span> {entryTitle}</span>}{" "}
+          {locale && <span>Published Locale: {locale}</span>}{" "}
+        </div>
+
+        <br />
         {publishStatus.length > 0 ? (
           <div className="publishing_details">
             {publishStatus.map((detail, index) => (

@@ -66,7 +66,7 @@ const Dashboard = () => {
           const data =
             obj.publish_details.find((pd: any) => pd.locale === locale.code)
               ?.environments || [];
-          console.log(data.length);
+          //console.log(data.length);
           return (
             <div className="pub-status-list">
               {data.length > 0 ? (
@@ -220,8 +220,8 @@ const Dashboard = () => {
           columns={columns}
           uniqueKey={"uid"}
           totalCounts={totalEntries} // Use totalEntries for totalCounts
-          fetchTableData={({ startIndex, endIndex }: any) => {
-            setCurrentPageData(entriesData.slice(startIndex, endIndex));
+          fetchTableData={({searchText}: any) => {
+            console.log(searchText);
           }}
           loadMoreItems={(params: any) => {
             console.log(params);
