@@ -141,8 +141,8 @@ const Dashboard = () => {
         location: appSdk?.location,
         appSdkInitialized: true,
       });
-      console.log(appSdk)
-      
+      console.log(appSdk);
+
       const { content_types } =
         (await appSdk?.location?.FullPage?.stack?.getContentTypes()) || {};
 
@@ -206,13 +206,6 @@ const Dashboard = () => {
   return (
     <div className="full-page-custom">
       <div className="full-page-header">
-        <Button
-          onClick={() => {
-            navigate(`/full-page/entry/article/blt8037e2be29d35703`);
-          }}
-        >
-          Click Me
-        </Button>
         <Select
           options={contentTypeOptions}
           value={selectedContentType}
