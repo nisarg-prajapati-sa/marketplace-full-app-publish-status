@@ -219,7 +219,7 @@
 //           onChange={(e: any) => {
 //             console.log(e);
 //           }}
-        
+
 //         /> */}
 //       </div>
 //       <div className="full-page-body">
@@ -261,7 +261,12 @@
 import "./styles.scss";
 import { useEffect, useMemo, useState } from "react";
 import ContentstackAppSDK from "@contentstack/app-sdk";
-import { Button, Icon, InfiniteScrollTable, Search } from "@contentstack/venus-components";
+import {
+  Button,
+  Icon,
+  InfiniteScrollTable,
+  Search,
+} from "@contentstack/venus-components";
 import { Select } from "@contentstack/venus-components";
 import { useNavigate } from "react-router-dom";
 
@@ -451,12 +456,6 @@ const Dashboard = () => {
           onChange={handleDropdownChange}
           placeholder="Select Content Type"
           selectLabel="Content Type"
-        />
-        <Search
-          debounceSearch
-          onChange={(e: any) => {
-            setSearchText(e.target.value);
-          }}
         />
       </div>
       <div className="full-page-body">

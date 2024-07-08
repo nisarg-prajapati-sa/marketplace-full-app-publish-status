@@ -68,43 +68,14 @@ const EntryView = (props: any) => {
             </Button>
           </div>
           <div className="layout-container">
-            <PageLayout
-              content={{
-                component: (
-                  <PublishDetail
-                    selectedLocale={selectedLocale}
+          <PublishDetail
+                    locales={locales}
                     environments={environments}
                     environmentsMapping={environmentsMapping}
                     appSDKLocation={state.location}
                     contentType={contentType}
                     entryUid={entryUid}
                   />
-                ),
-              }}
-              header={{
-                component: (
-                  <PageHeader
-                    content=""
-                    title={{
-                      label: selectedLocale
-                        ? ` Locale : ${selectedLocale?.name} - ${selectedLocale?.code}`
-                        : "Publish Status",
-                    }}
-                  />
-                ),
-              }}
-              //   leftSidebar={{
-              //     component: (
-              //       <Sidebar
-              //         locales={locales}
-              //         selectedLocale={selectedLocale}
-              //         setSelectedLocale={setSelectedLocale}
-              //       />
-              //     ),
-              //   }}
-              type="list"
-              version="v2"
-            />
           </div>
         </div>
       </React.Fragment>
