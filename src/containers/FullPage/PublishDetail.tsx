@@ -1,6 +1,5 @@
 import ContentstackAppSDK from "@contentstack/app-sdk";
-import { InfiniteScrollTable } from "@contentstack/venus-components";
-
+import { InfiniteScrollTable, Search } from "@contentstack/venus-components";
 import React, { useEffect, useMemo, useState } from "react";
 
 const PublishDetail = ({
@@ -10,16 +9,13 @@ const PublishDetail = ({
   contentType,
   entryUid,
 }: any) => {
-  console.log(
-    locales,
-    environments,
-    environmentsMapping,
-    contentType,
-    entryUid
-  );
-
+  const [totalEntries, setTotalEntries] = useState(0);
   const [publishStatus, setPublishStatus] = useState<any[]>([]);
-  const [entryTitle, setEntryTitle] = useState(null);
+  const [pagination, setPagination] = useState({
+    pageSize: 30,
+    page: 1,
+  });
+  const [searchText, setSearchText] = useState("");
 
   const columns = useMemo(
     () => [
@@ -28,23 +24,23 @@ const PublishDetail = ({
         accessor: "locale",
         columnWidthMultiplier: 1.9,
         disableResizing: false,
-        width: 400,
       },
       ...environments.map((env: any) => ({
         Header: env.name,
         accessor: (obj: any) => {
-            const data = obj.publishing_details.filter((pub:any)=>(pub.environment == env.name));
+          const data = obj.publishing_details.filter(
+            (pub: any) => pub.environment === env.name
+          );
           return (
             <div className="pub-status-list">
               {data.length > 0 ? (
-                data.map((item: any) => {
-                  return <span>{item.details}</span>;
-                })
+                data.map((item: any) => (
+                  <span key={item.details}>{item.details}</span>
+                ))
               ) : (
                 <span>Not Published</span>
               )}
             </div>
-          
           );
         },
         id: env.uid,
@@ -53,109 +49,118 @@ const PublishDetail = ({
     ],
     [environments]
   );
-  function getPublishingDetails(
+
+  const getPublishingDetails = (
     selectedLocale: any,
     publishingDetails: any,
     environmentsDetail: any,
     publishedLocale: any
-  ) {
-    console.log(selectedLocale);
-    // Filter the publishing details based on the selected locale
+  ) => {
     const filteredDetails = publishingDetails.filter(
       (detail: any) => detail.locale === selectedLocale
     );
 
-    console.log(filteredDetails);
-    // Map through the filtered details to get the version and environment name
-    const result = filteredDetails.map((detail: any) => {
-      const environmentName =
-        environmentsDetail[detail.environment] || "Unknown Environment";
-      return {
-        details: publishedLocale + " " + detail.version,
-        environment: environmentName,
-      };
-    });
+    const result = filteredDetails.map((detail: any) => ({
+      details: `${publishedLocale} ${detail.version}`,
+      environment:
+        environmentsDetail[detail.environment] || "Unknown Environment",
+    }));
 
     const resultWithLocale = {
       locale: selectedLocale,
       publishing_details: result,
     };
     return resultWithLocale;
-  }
-  useEffect(() => {
-    const fetchPublishDetails = async () => {
-      try {
-        const appSdk = await ContentstackAppSDK.init();
-        if (locales) {
-          const publishDetailsPromises = locales.map(async (locale: any) => {
-            const { entry } = await appSdk?.stack
-              ?.ContentType(contentType)
-              .Entry(entryUid)
-              .only("locale")
-              .addParam("include_publish_details", "true")
-              .addParam("locale", locale?.code)
-              .fetch();
+  };
 
-            console.log(entry);
+  const fetchPublishDetails = async () => {
+    try {
+      const appSdk = await ContentstackAppSDK.init();
+      if (locales) {
+        const publishDetailsPromises = locales.map(async (locale: any) => {
+          const { entry } = await appSdk?.stack
+            ?.ContentType(contentType)
+            .Entry(entryUid)
+            .only("locale")
+            .addParam("include_publish_details", "true")
+            .addParam("locale", locale?.code)
+            .fetch();
 
-            let publishStatus = getPublishingDetails(
-              locale.code,
-              entry.publish_details,
-              environmentsMapping,
-              entry.locale
-            );
-            (publishStatus as any)["publishedLocale"] = entry.locale;
-            console.log(publishStatus);
-            return publishStatus;
-          });
+          let publishStatus = getPublishingDetails(
+            locale.code,
+            entry.publish_details,
+            environmentsMapping,
+            entry.locale
+          );
+          (publishStatus as any)["publishedLocale"] = entry.locale;
+          return publishStatus;
+        });
 
-          const publishDetails = await Promise.all(publishDetailsPromises);
-          console.log(publishDetails);
-          setPublishStatus(publishDetails);
-        }
-      } catch (error) {
-        console.error("Error fetching publish details:", error);
+        const publishDetails = await Promise.all(publishDetailsPromises);
+        setTotalEntries(publishDetails.length);
+        setPublishStatus(publishDetails);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching publish details:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchPublishDetails();
-  }, [locales, contentType, entryUid, environmentsMapping, environments]);
+  }, [locales, contentType, entryUid, environmentsMapping]);
+
+  const handleSearch = (searchText: string) => {
+    setSearchText(searchText);
+  };
+
+  const filteredData = useMemo(() => {
+    let filtered = publishStatus;
+    if (searchText) {
+      filtered = filtered.filter((item) =>
+        item.locale.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+    setTotalEntries(filtered.length);
+    return filtered;
+  }, [publishStatus, searchText]);
+
+  const handlePaginationChange = ({ page, pageSize }: any) => {
+    setPagination({ page, pageSize });
+  };
+
+  const currentPageData = useMemo(() => {
+    const startIndex = (pagination.page - 1) * pagination.pageSize;
+    const endIndex = startIndex + pagination.pageSize;
+    return filteredData.slice(startIndex, endIndex);
+  }, [pagination, filteredData]);
 
   return (
     <div className="container">
-      {publishStatus.length > 0 ? (
-        <div>
-          <InfiniteScrollTable
-            data={publishStatus}
-            columns={columns}
-            uniqueKey={"locale"}
-            //   totalCounts={totalEntries}
-            fetchTableData={({ searchText }: any) => {
-              //   setSearchText(searchText);
-            }}
-            loadMoreItems={(params: any) => {
-              console.log(params);
-            }}
-            canResize
-            v2Features={{
-              isNewEmptyState: true,
-              pagination: true,
-            }}
-            rowPerPageOptions={[30, 50, 100]}
-            //   onChangePagination={({ page, pageSize }: any) => {
-            //     const startIndex = (page - 1) * pageSize;
-            //     const endIndex = page * pageSize;
-            //     setCurrentPageData(entriesData.slice(startIndex, endIndex));
-            //   }}
-            canSearch
-            isResizable
-            tableHeight={650}
-            //   onRowClick={handleRowClick}
-          />
-        </div>
-      ) : (
-        <></>
-      )}
+      <div>
+        <InfiniteScrollTable
+          data={currentPageData}
+          columns={columns}
+          uniqueKey="locale"
+          fetchTableData={({ searchText }: any) => {
+            setSearchText(searchText);
+          }}
+          loadMoreItems={(params: any) => {
+            console.log(params);
+          }}
+          canResize
+          v2Features={{
+            isNewEmptyState: true,
+            pagination: true,
+          }}
+          rowPerPageOptions={[30, 50, 100]}
+          onChangePagination={handlePaginationChange}
+          canSearch
+          isResizable
+          tableHeight={650}
+          totalCounts={totalEntries}
+          searchPlaceholder={"Search Locale (Eg. en-us)"}
+        />
+      </div>
     </div>
   );
 };
