@@ -37,6 +37,6 @@ Check [http://localhost:3000](http://localhost:3000)
 ### 2. Set up app on Contentstack
 
 <video width="600" controls>
-  <source src="https://drive.google.com/file/d/1iuf6al9nkazn8okIYACJDOKFcnCb36Uf/view?usp=sharing" type="video/mp4" />
+  <source src="https://drive.google.com/file/d/1iuf6al9nkazn8okIYACJDOKFcnCb36Uf/view?usp=sharing" type="video/mp4" >
   Your browser does not support the video tag.
 </video>

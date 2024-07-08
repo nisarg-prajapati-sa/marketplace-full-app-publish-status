@@ -5,9 +5,17 @@ import React, { useEffect, useState } from "react";
 const PublishDetail = ({
   selectedLocale,
   environments,
+  environmentsMapping,
   contentType,
   entryUid,
 }: any) => {
+  console.log(
+    selectedLocale,
+    environments,
+    environmentsMapping,
+    contentType,
+    entryUid
+  );
   const [locale, setLocale] = useState("");
   const [publishStatus, setPublishStatus] = useState<any[]>([]);
   const [entryTitle, setEntryTitle] = useState(null);

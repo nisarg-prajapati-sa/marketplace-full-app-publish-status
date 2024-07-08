@@ -1,13 +1,19 @@
 import ContentstackAppSDK from "@contentstack/app-sdk";
-import { PageHeader, PageLayout } from "@contentstack/venus-components";
+import {
+  Button,
+  Icon,
+  PageHeader,
+  PageLayout,
+} from "@contentstack/venus-components";
 import { forEach } from "lodash";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import PublishDetail from "./PublishDetail";
 
 const EntryView = (props: any) => {
-    const {contentType, entryUid} = useParams();
+  const navigate = useNavigate();
+  const { contentType, entryUid } = useParams();
   console.log();
   const [state, setState] = useState<any>({
     config: {},
@@ -16,6 +22,7 @@ const EntryView = (props: any) => {
   });
   const [locales, setLocales] = useState<any[]>([]);
   const [environments, setEnvironments] = useState<any[]>([]);
+  const [environmentsMapping, setEnvironmentsMapping] = useState(null);
   const [selectedLocale, setSelectedLocale] = useState<any>(null);
   useEffect(() => {
     ContentstackAppSDK.init().then(async (appSdk) => {
@@ -31,23 +38,35 @@ const EntryView = (props: any) => {
 
       let { environments } =
         (await appSdk?.location?.FullPage?.stack?.getEnvironments()) || {};
-      environments = environments.reduce((acc: any, env: any) => {
+      const environmentsMapping = environments.reduce((acc: any, env: any) => {
         acc[env.uid] = env.name;
         return acc;
       }, {});
 
       locales.forEach((locale: any) => {});
-      
+      setEnvironmentsMapping(environmentsMapping);
       setEnvironments(environments);
       console.log(locales);
       console.log(environments);
     });
   }, []);
-  
+
   return (
-    <div>
+    <div className="entry-detail-view">
       <React.Fragment key=".0">
         <div>
+          <div className="navigation-button">
+            <Button
+              buttonType="secondary"
+              icon="BackArrow"
+              onClick={() => {
+                navigate("/full-page");
+              }}
+              size="small"
+            >
+              Back
+            </Button>
+          </div>
           <div className="layout-container">
             <PageLayout
               content={{
@@ -55,6 +74,7 @@ const EntryView = (props: any) => {
                   <PublishDetail
                     selectedLocale={selectedLocale}
                     environments={environments}
+                    environmentsMapping={environmentsMapping}
                     appSDKLocation={state.location}
                     contentType={contentType}
                     entryUid={entryUid}
@@ -73,15 +93,15 @@ const EntryView = (props: any) => {
                   />
                 ),
               }}
-              leftSidebar={{
-                component: (
-                  <Sidebar
-                    locales={locales}
-                    selectedLocale={selectedLocale}
-                    setSelectedLocale={setSelectedLocale}
-                  />
-                ),
-              }}
+              //   leftSidebar={{
+              //     component: (
+              //       <Sidebar
+              //         locales={locales}
+              //         selectedLocale={selectedLocale}
+              //         setSelectedLocale={setSelectedLocale}
+              //       />
+              //     ),
+              //   }}
               type="list"
               version="v2"
             />
