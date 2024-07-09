@@ -17,6 +17,10 @@ Follow the steps below to clone the repository and run the React app.
 
 First, clone the repository from GitHub to your local machine:
 
+
+
+
+
 ```sh
 git clone https://github.com/nisarg-prajapati-sa/marketplace-full-app-publish-status
 ```
@@ -36,7 +40,4 @@ Check [http://localhost:3000](http://localhost:3000)
 
 ### 2. Set up app on Contentstack
 
-<video width="600" controls>
-  <source src="https://drive.google.com/file/d/1iuf6al9nkazn8okIYACJDOKFcnCb36Uf/view?usp=sharing" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+https://github.com/nisarg-prajapati-sa/marketplace-full-app-publish-status/assets/173409587/f06458cc-0ba0-4660-807d-cba25571fe6c
